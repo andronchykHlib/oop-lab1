@@ -1,11 +1,10 @@
-using System.Numerics;
 using System.Runtime.CompilerServices;
 
 namespace Lab_1;
 
 class SurfaceEquation
 {
-    private readonly Tuple<int, int,int, int> _coefficients = new(0, 0, 0, 0);
+    private readonly Tuple<int, int,int, int> _coefficients;
     private Tuple<int, int,int> _coordinates = new (0, 0, 0);
 
     public SurfaceEquation(params int[] coefs)
@@ -20,23 +19,21 @@ class SurfaceEquation
 
     public SurfaceEquation SetCoordinates(params int[] coordinates)
     {
+        if (coordinates.Length < 3)
+        {
+            throw new ArgumentException("Coordinates length is incorrect");
+        }
+
         _coordinates = Tuple.Create(coordinates[0], coordinates[1], coordinates[2]);
 
         return this;
     }
 
-    public int[] GetAllCoefficients()
+    public string GetAllCoefficients() => _coefficients.ToString();
+    
+    public bool HasPoint(params int[]? coordinates)
     {
-        int[] coefficientsArray  = new int[4];
-        
-        Array.Copy(Array.ConvertAll(_coefficients.ToString().Split(), int.Parse), coefficientsArray, 4);
-        
-        return coefficientsArray;
-    }
-
-    public bool HasPoint(params int[] coordinates)
-    {
-        if (coordinates.Length == 0)
+        if (coordinates == null || coordinates.Length == 0)
         {
             return _coefficients.Item1 * _coordinates.Item1 + _coefficients.Item2 * _coordinates.Item2 + _coefficients.Item3 * _coordinates.Item3 + _coefficients.Item4 == 0;
         }
@@ -46,21 +43,27 @@ class SurfaceEquation
         return _coefficients.Item1 * x + _coefficients.Item2 * y + _coefficients.Item3 * z + _coefficients.Item4 == 0;
     }
 
-    public string Intersects(SurfaceEquation surface)
+    public SurfaceEquation GetAxisIntersection()
     {
-        Vector3 normal1 = new Vector3(surface[0], surface[1], surface[2]);
-        Vector3 normal2 = new Vector3(_coefficients.Item1, _coefficients.Item2, _coefficients.Item3);
-
-        var direction = Vector3.Cross(normal1, normal2);
-
-        if (direction.Length() == 0)
+        var (a, b, c, d) = (_coefficients.Item1, _coefficients.Item2, _coefficients.Item3, _coefficients.Item4);
+        
+        if (a != 0)
         {
-            return "Parallel";
+            double x = (double)-d / a;
+            Console.WriteLine($"Intersects X axis at [{x},0,0]");
+        }
+        if (b != 0)
+        {
+            double y = (double)-d / b;
+            Console.WriteLine($"Intersects Y axis at [0,{y},0]");
+        }
+        if (c != 0)
+        {
+            double z = (double)-d / c;
+            Console.WriteLine($"Intersects Z axis at [0,0,{z}]");
         }
 
-        Vector3 point = (direction * surface[3] - direction * _coefficients.Item4) / (direction.LengthSquared());
-        point.ToString();
-        return  point.ToString();
+        return this;
     }
 
     public int this[int c] {

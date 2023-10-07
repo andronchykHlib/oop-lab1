@@ -2,57 +2,71 @@ namespace Lab_1;
 
 public class TDisk
 {
-  public double cY { get; set; }
+  protected double _cY;
 
-  public double cX { get; set; }
+  protected double _cX;
 
-  public double Radius { get; set; }
+  protected double _Radius;
+
+  public double Radius
+  {
+    get => _Radius;
+  }
+  public double cY
+  {
+    get => _cY;
+  }
+  public double cX
+  {
+    get => _cX;
+    set { }
+  }
 
 
   // Constructors
   public TDisk(params double[] args)
   {
-    Radius = args[0];
-    this.cX = args[1];
-    this.cY = args[2];
+    _Radius = args[0];
+    _cX = args[1];
+    _cY = args[2];
   }
 
   public TDisk(TDisk disk)
   {
-    Radius = disk.Radius;
-    cX = disk.cX;
-    cY = disk.cY;
+    _Radius = disk.Radius;
+    _cX = disk.cX;
+    _cY = disk.cY;
   }
 
   public TDisk()
   {
-    Radius = 2;
-    cX = 0;
-    cY = 0;
+    _Radius = 2;
+    _cX = 0;
+    _cY = 0;
   }
   
   // Methods
-  public TDisk SetRadius(double r)
+  public virtual TDisk SetRadius(double r)
   {
-    Radius = r;
+    _Radius = r;
     
     return this;
   }
 
-  public TDisk SetCenter(params double[] coords)
+  public virtual TDisk SetCenter(params double[] coords)
   {
-    cX = coords[0];
-    cY = coords[1];
+    _cX = coords[0];
+    _cY = coords[1];
 
     return this;
   }
 
-  public double Square()
+  public virtual double Square()
   {
     return Math.PI * Radius * Radius;
   }
 
-  public bool HasPoint(params double[] coords)
+  public virtual bool HasPoint(params double[] coords)
   {
     var difference1 = coords[0] - cX;
     var difference2 = coords[1] - cY;
@@ -73,6 +87,6 @@ public class TDisk
 
   public override string ToString()
   {
-    return $"Radius: {Radius}\nCenter: <{cX} {cY}>";
+    return $"\tRadius: {Radius}\n\tCenter: <{cX} {cY}>";
   }
 }
